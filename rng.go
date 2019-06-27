@@ -94,6 +94,7 @@ var _ rand.Source64 = (*Pcg32)(nil)
 
 func (s *Pcg32) Seed(seed int64) {
 	*s = Pcg32(seed)
+	s.Uint32()
 }
 
 // Generate a 32-bit, uniform random integer.
