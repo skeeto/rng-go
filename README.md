@@ -20,6 +20,8 @@ What PRNGs are included?
 [xo]: http://xoshiro.di.unimi.it/xoshiro256starstar.c
 [pcg32]: http://www.pcg-random.org/download.html
 
+Requires Go 1.12.
+
 ## Example
 
 ```go
