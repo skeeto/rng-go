@@ -47,9 +47,9 @@ func (s *SplitMix64) Seed(seed int64) {
 func (s *SplitMix64) Uint64() uint64 {
 	*s += 0x9e3779b97f4a7c15
 	z := uint64(*s)
-	z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9
-	z = (z ^ (z >> 27)) * 0x94d049bb133111eb
-	return z ^ (z >> 31)
+	z = (z ^ z>>30) * 0xbf58476d1ce4e5b9
+	z = (z ^ z>>27) * 0x94d049bb133111eb
+	return z ^ z>>31
 }
 
 func (s *SplitMix64) Int63() int64 {
@@ -73,14 +73,14 @@ func (s *Xoshiro256ss) Seed(seed int64) {
 
 func (s *Xoshiro256ss) Uint64() uint64 {
 	x := s[1] * 5
-	r := ((x << 7) | (x >> 57)) * 9
+	r := (x<<7 | x>>57) * 9
 	t := s[1] << 17
 	s[2] ^= s[0]
 	s[3] ^= s[1]
 	s[1] ^= s[2]
 	s[0] ^= s[3]
 	s[2] ^= t
-	s[3] = (s[3] << 45) | (s[3] >> 19)
+	s[3] = s[3]<<45 | s[3]>>19
 	return r
 }
 
