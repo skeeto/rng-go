@@ -88,6 +88,8 @@ func (s *Xoshiro256ss) Int63() int64 {
 	return int64(s.Uint64() >> 1)
 }
 
+// A Pcg32 provides a 32-bit permuted congruential generator that
+// implements math/rand.Source64.
 type Pcg32 uint64
 
 var _ rand.Source64 = (*Pcg32)(nil)
@@ -97,7 +99,7 @@ func (s *Pcg32) Seed(seed int64) {
 	s.Uint32()
 }
 
-// Generate a 32-bit, uniform random integer.
+// Uint32 returns a uniformly random 32-bit integer.
 func (s *Pcg32) Uint32() uint32 {
 	p := uint64(*s)
 	*s = Pcg32(p*0x5851f42d4c957f2d + 0x14057b7ef767814f)
