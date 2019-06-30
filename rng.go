@@ -9,7 +9,8 @@ import (
 )
 
 // An Lcg128 is a 128-bit linear congruential generator implementing
-// math/rand.Source64.
+// math/rand.Source64. Note: When seeded manually, the least significant
+// bit of Lo must be 1.
 type Lcg128 struct{ Hi, Lo uint64 }
 
 var _ rand.Source64 = (*Lcg128)(nil)
@@ -35,7 +36,7 @@ func (s *Lcg128) Int63() int64 {
 }
 
 // A SplitMix64 provides the SplitMix64 algorithm and implements
-// math/rand.Source64.
+// math/rand.Source64. May be manually seeded to any value.
 type SplitMix64 uint64
 
 var _ rand.Source64 = (*SplitMix64)(nil)
@@ -57,7 +58,8 @@ func (s *SplitMix64) Int63() int64 {
 }
 
 // A Xoshiro256ss provides the xoshiro256** algorithm and implements
-// math/rand.Source64.
+// math/rand.Source64. Must be seeded carefully with good random values,
+// so the Seed() method is highly recommended.
 type Xoshiro256ss [4]uint64
 
 var _ rand.Source64 = (*Xoshiro256ss)(nil)
@@ -89,14 +91,14 @@ func (s *Xoshiro256ss) Int63() int64 {
 }
 
 // A Pcg32 provides a 32-bit permuted congruential generator that
-// implements math/rand.Source64.
+// implements math/rand.Source64. Can be seeded to any value.
 type Pcg32 uint64
 
 var _ rand.Source64 = (*Pcg32)(nil)
 
 func (s *Pcg32) Seed(seed int64) {
 	*s = Pcg32(seed)
-	s.Uint32()
+	s.Uint32() // discard first output as it's essentially just the seed
 }
 
 // Uint32 returns a uniformly random 32-bit integer.
