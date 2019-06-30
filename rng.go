@@ -90,6 +90,56 @@ func (s *Xoshiro256ss) Int63() int64 {
 	return int64(s.Uint64() >> 1)
 }
 
+var jump = [4]uint64{
+	0x180ec6d33cfd0aba, 0xd5a61266f0c9392c,
+	0xa9582618e03fc9aa, 0x39abdc4529b1661c,
+}
+
+// Jump is equivalent to 2^128 calls to Uint64().
+func (s *Xoshiro256ss) Jump() {
+	var s0, s1, s2, s3 uint64
+	for _, j := range jump {
+		for b := uint(0); b < 64; b++ {
+			if j&(1<<b) != 0 {
+				s0 ^= s[0]
+				s1 ^= s[1]
+				s2 ^= s[2]
+				s3 ^= s[3]
+			}
+			s.Uint64()
+		}
+	}
+	s[0] = s0
+	s[1] = s1
+	s[2] = s2
+	s[3] = s3
+}
+
+var longjump = [4]uint64{
+	0x76e15d3efefdcbbf, 0xc5004e441c522fb3,
+	0x77710069854ee241, 0x39109bb02acbe635,
+}
+
+// LongJump is equivalent to 2^192 calls to Uint64().
+func (s *Xoshiro256ss) LongJump() {
+	var s0, s1, s2, s3 uint64
+	for _, j := range longjump {
+		for b := uint(0); b < 64; b++ {
+			if j&(1<<b) != 0 {
+				s0 ^= s[0]
+				s1 ^= s[1]
+				s2 ^= s[2]
+				s3 ^= s[3]
+			}
+			s.Uint64()
+		}
+	}
+	s[0] = s0
+	s[1] = s1
+	s[2] = s2
+	s[3] = s3
+}
+
 // A Pcg32 provides a 32-bit permuted congruential generator that
 // implements math/rand.Source64. Can be seeded to any value.
 type Pcg32 uint64

@@ -62,18 +62,51 @@ func TestXoshiro256ss(t *testing.T) {
 	// The bad initial output demonstrates why it's important to see
 	// this one very carefully. Fortunately it doesn't matter for this
 	// test.
-	want := []uint64{
+	wantInitial := []uint64{
 		0x0000000000002d00, 0x0000000000000000, 0x000000005a007080,
 		0x10e0000000009d80, 0x10e0b61ce1009d80, 0x0870021ce143ad00,
 		0xe071c3c2e143f089, 0x75a1690ef7a20380, 0x9309685b465c23f9,
 		0x284f3cc2e13e3c88, 0xc8d749005a413820, 0x1194b410fef20904,
 		0xb54a54470263b28c, 0x959e65495daf641c, 0xe561ccecea17f527,
 	}
+	wantJump := []uint64{
+		0x7f7988f72be9c508, 0x5c874fec44783b77, 0x17bcd9b08580dd16,
+		0x9ca7f9375f7dbeb2, 0x24caff1483ddd1fa, 0x82d029c9ad74981c,
+		0xbbecb7a079cc3631, 0x73e0b137d9f0e369, 0x2b45ddc72e234c08,
+		0x06db8f6ecfdb0688, 0xce4ddcf2458e8f71, 0x6892346243ec2224,
+		0x721f3bb7498cd45b, 0x4706ddfc3ac5a535, 0x1833b360cae1f78f,
+	}
+	wantLongJump := []uint64{
+		0x409011b83d3299b0, 0xa48dde13c7845f77, 0xf2853b09ce7f46f7,
+		0x684e872d5de653df, 0x34d9cef14360b534, 0x42a55e5c647a97c4,
+		0xfc07bbe2a0ff49e3, 0x25b74d3c3e1395a4, 0x66c3b4e434a41253,
+		0xeef93c334db407df, 0xcbe33255433c267a, 0x1aeb5a580f8b97f7,
+		0xee0b16ebb05cc830, 0x1951fff956477d9e, 0xd586fc5de6068234,
+	}
+
 	r := rng.Xoshiro256ss{1, 2, 3, 4}
-	for i, w := range want {
+	for i, w := range wantInitial {
 		got := r.Uint64()
 		if got != w {
 			t.Errorf("Xoshiro256ss.Uint64(%d), got %#016x, want %#016x",
+				i, got, w)
+		}
+	}
+
+	r.Jump()
+	for i, w := range wantJump {
+		got := r.Uint64()
+		if got != w {
+			t.Errorf("Xoshiro256ss.Jump(%d), got %#016x, want %#016x",
+				i, got, w)
+		}
+	}
+
+	r.LongJump()
+	for i, w := range wantLongJump {
+		got := r.Uint64()
+		if got != w {
+			t.Errorf("Xoshiro256ss.LongJump(%d), got %#016x, want %#016x",
 				i, got, w)
 		}
 	}
