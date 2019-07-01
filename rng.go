@@ -1,3 +1,5 @@
+// This is free and unencumbered software released into the public domain.
+
 // Package rng provides several more efficient PRNGs sources for use
 // with math/rand.Rand. Each PRNG implements the math/rand.Source64
 // interface.
