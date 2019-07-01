@@ -50,19 +50,28 @@ func main() {
 ## Benchmark
 
 The gc implementation of Go doesn't go a great job optimizing these
-routines compared to either GCC or Clang, so SplitMix64 currently
-performs the best:
+routines compared to either GCC or Clang, so SplitMix64 performs the
+best of the algorithms in this package. The "baseline" is the default
+source from `math/rand`, and the "interface" benchmarks call through the
+`math/rand.Source64` interface.
 
-    $ go test -bench=.
+    # go test -bench=.
     goos: linux
     goarch: amd64
     pkg: github.com/skeeto/rng-go
-    BenchmarkLcg128-8               1000000000               2.14 ns/op
-    BenchmarkSplitMix64-8           2000000000               1.36 ns/op
-    BenchmarkXoshiro256ss-8         500000000                3.48 ns/op
-    BenchmarkPcg32-8                300000000                4.21 ns/op
-    BenchmarkBaseline-8             500000000                3.29 ns/op
+    BenchmarkLcg128-8                  	1000000000	         2.54 ns/op
+    BenchmarkLcg128Interface-8         	300000000	         4.16 ns/op
+    BenchmarkSplitMix64-8              	2000000000	         1.51 ns/op
+    BenchmarkSplitMix64Interface-8     	300000000	         4.32 ns/op
+    BenchmarkXoshiro256ss-8            	500000000	         3.68 ns/op
+    BenchmarkXoshiro256ssInterface-8   	200000000	         6.06 ns/op
+    BenchmarkPcg32-8                   	300000000	         4.46 ns/op
+    BenchmarkPcg32Interface-8          	200000000	         7.12 ns/op
+    BenchmarkBaseline-8                	500000000	         3.69 ns/op
     PASS
-    ok      github.com/skeeto/rng-go        10.970s
+    ok  	github.com/skeeto/rng-go	19.590s
 
-The "baseline" is the default source from `math/rand`.
+The big takeaway here: **Interface calls are expensive!** If possible,
+use SplitMix64, and do not call it through an interface since that cuts
+its performance by 65%. If you must call through an interface, the
+built-in PRNG is the fastest. Use it if the large state doesn't matter.

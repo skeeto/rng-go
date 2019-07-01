@@ -32,6 +32,14 @@ func BenchmarkLcg128(b *testing.B) {
 	}
 }
 
+func BenchmarkLcg128Interface(b *testing.B) {
+	r := rand.New(new(rng.Lcg128))
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
 func TestSplitMix64(t *testing.T) {
 	want := []uint64{
 		0xe220a8397b1dcdaf, 0x6e789e6aa1b965f4, 0x06c45d188009454f,
@@ -52,6 +60,14 @@ func TestSplitMix64(t *testing.T) {
 
 func BenchmarkSplitMix64(b *testing.B) {
 	var r rng.SplitMix64
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkSplitMix64Interface(b *testing.B) {
+	r := rand.New(new(rng.SplitMix64))
 	r.Seed(int64(b.N))
 	for i := 0; i < b.N; i++ {
 		r.Uint64()
@@ -120,6 +136,14 @@ func BenchmarkXoshiro256ss(b *testing.B) {
 	}
 }
 
+func BenchmarkXoshiro256ssInterface(b *testing.B) {
+	r := rand.New(new(rng.Xoshiro256ss))
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
 func TestPcg32(t *testing.T) {
 	// Output from official "Minimal C Implementation"
 	// seed = 0, inc = 0x14057b7ef767814f
@@ -142,6 +166,14 @@ func TestPcg32(t *testing.T) {
 
 func BenchmarkPcg32(b *testing.B) {
 	var r rng.Pcg32
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkPcg32Interface(b *testing.B) {
+	r := rand.New(new(rng.Pcg32))
 	r.Seed(int64(b.N))
 	for i := 0; i < b.N; i++ {
 		r.Uint64()
