@@ -1,20 +1,21 @@
 package rng_test
 
 import (
-	"github.com/skeeto/rng-go"
 	"math/rand"
 	"testing"
+
+	"github.com/skeeto/rng-go"
 )
 
 func TestLcg128(t *testing.T) {
 	want := []uint64{
-		0x0fc94e3bf4e9ab32, 0x9f4c53132cb5b55a, 0x04f16bbaa6c209fe,
-		0x9c0827f89f0f242f, 0x5b5349ddf2ca0286, 0x9a09a2d3e4f52267,
-		0xf4e9e997e821367b, 0xd23cf34fc72f4155, 0x56a2d7e343d7f1b5,
-		0x73b5f20e34a8238c, 0xae9a39664ecf3934, 0xe6f5736f43e75071,
-		0xf10b6472f469fe94, 0xede9c4aaef957022, 0x8b321466f467bfe0,
+		0x2d99787926d46932, 0x579d64f7b4780f53, 0xc716c8bffcc60271,
+		0xfc763fac42f18290, 0xeba26e07402a33f4, 0xe2c6dd9f0e06fc35,
+		0x779d001d1e3bf290, 0xfaa9b1ae526c3070, 0x235d2825e14c0f15,
+		0x19c3b1bfec64fa79, 0x9ae3d4f0ade39da9, 0x597c849c597c0624,
+		0x8be750f54de1d4c4, 0x58d34b21dc53606e, 0x5f78dea7e0db0986,
 	}
-	r := rng.Lcg128{0, 1}
+	r := rng.Lcg128{0, 0}
 	for i, w := range want {
 		got := r.Uint64()
 		if got != w {

@@ -59,8 +59,8 @@ source from `math/rand`, and the "interface" benchmarks call through the
     goos: linux
     goarch: amd64
     pkg: github.com/skeeto/rng-go
-    BenchmarkLcg128-8                  	1000000000	         2.54 ns/op
-    BenchmarkLcg128Interface-8         	300000000	         4.16 ns/op
+    BenchmarkLcg128-8                  	1000000000	         3.29 ns/op
+    BenchmarkLcg128Interface-8         	300000000	         4.38 ns/op
     BenchmarkSplitMix64-8              	2000000000	         1.51 ns/op
     BenchmarkSplitMix64Interface-8     	300000000	         4.32 ns/op
     BenchmarkXoshiro256ss-8            	500000000	         3.68 ns/op

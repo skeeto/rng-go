@@ -10,27 +10,29 @@ import (
 	"math/rand"
 )
 
-// An Lcg128 is a 128-bit linear congruential generator implementing
-// math/rand.Source64. Note: When seeded manually, the least significant
-// bit of Lo must be 1.
+// An Lcg128 is a truncated 128-bit linear congruential generator
+// implementing math/rand.Source64. Can be seeded to any value.
 type Lcg128 struct{ Hi, Lo uint64 }
 
 var _ rand.Source64 = (*Lcg128)(nil)
 
 func (s *Lcg128) Seed(seed int64) {
-	s.Hi = uint64(seed)
-	s.Lo = 1
+	s.Lo = uint64(seed)
+	s.Hi = 0
 }
 
 func (s *Lcg128) Uint64() uint64 {
 	const (
-		mhi = 0x0fc94e3bf4e9ab32
-		mlo = 0x866458cd56f5e605
+		mhi = 0x2d99787926d46932
+		mlo = 0xa4c1f32680f70c55
 	)
 	carry, lo := bits.Mul64(mlo, s.Lo)
-	s.Hi = mhi*s.Lo + s.Hi*mlo + carry
+	hi := mhi*s.Lo + s.Hi*mlo + carry
+	lo, carry = bits.Add64(lo, mlo, 0)
+	hi += mhi + carry
 	s.Lo = lo
-	return s.Hi
+	s.Hi = hi
+	return hi
 }
 
 func (s *Lcg128) Int63() int64 {
