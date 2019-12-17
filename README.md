@@ -55,21 +55,21 @@ best of the algorithms in this package. The "baseline" is the default
 source from `math/rand`, and the "interface" benchmarks call through the
 `math/rand.Source64` interface.
 
-    # go test -bench=.
+    $ go test -bench=.
     goos: linux
     goarch: amd64
     pkg: github.com/skeeto/rng-go
-    BenchmarkLcg128-8                  	1000000000	         3.29 ns/op
-    BenchmarkLcg128Interface-8         	300000000	         4.38 ns/op
-    BenchmarkSplitMix64-8              	2000000000	         1.51 ns/op
-    BenchmarkSplitMix64Interface-8     	300000000	         4.32 ns/op
-    BenchmarkXoshiro256ss-8            	500000000	         3.68 ns/op
-    BenchmarkXoshiro256ssInterface-8   	200000000	         6.06 ns/op
-    BenchmarkPcg32-8                   	300000000	         4.46 ns/op
-    BenchmarkPcg32Interface-8          	200000000	         7.12 ns/op
-    BenchmarkBaseline-8                	500000000	         3.69 ns/op
+    BenchmarkLcg128-8                  	407349361	         2.76 ns/op
+    BenchmarkLcg128Interface-8         	312309956	         3.85 ns/op
+    BenchmarkSplitMix64-8              	888909228	         1.40 ns/op
+    BenchmarkSplitMix64Interface-8     	348746890	         3.47 ns/op
+    BenchmarkXoshiro256ss-8            	345606333	         3.50 ns/op
+    BenchmarkXoshiro256ssInterface-8   	215023484	         5.58 ns/op
+    BenchmarkPcg32-8                   	347164992	         3.54 ns/op
+    BenchmarkPcg32Interface-8          	245145093	         4.90 ns/op
+    BenchmarkBaseline-8                	365977761	         3.29 ns/op
     PASS
-    ok  	github.com/skeeto/rng-go	19.590s
+    ok  	github.com/skeeto/rng-go	14.099s
 
 The big takeaway here: **Interface calls are expensive!** If possible,
 use SplitMix64, and do not call it through an interface since that cuts

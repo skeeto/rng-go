@@ -82,14 +82,14 @@ func (s *Xoshiro256ss) Seed(seed int64) {
 
 func (s *Xoshiro256ss) Uint64() uint64 {
 	x := s[1] * 5
-	r := (x<<7 | x>>57) * 9
+	r := bits.RotateLeft64(x, 7) * 9
 	t := s[1] << 17
 	s[2] ^= s[0]
 	s[3] ^= s[1]
 	s[1] ^= s[2]
 	s[0] ^= s[3]
 	s[2] ^= t
-	s[3] = s[3]<<45 | s[3]>>19
+	s[3] = bits.RotateLeft64(s[3], 45)
 	return r
 }
 
@@ -163,8 +163,8 @@ func (s *Pcg32) Uint32() uint32 {
 	p := uint64(*s)
 	*s = Pcg32(p*0x5851f42d4c957f2d + 0x14057b7ef767814f)
 	x := uint32((p>>18 ^ p) >> 27)
-	r := uint(p >> 59)
-	return x>>r | x<<(-r&31)
+	r := int(p >> 59)
+	return bits.RotateLeft32(x, -r)
 }
 
 func (s *Pcg32) Uint64() uint64 {
