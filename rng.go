@@ -40,7 +40,7 @@ func (s *Lcg128) Int63() int64 {
 }
 
 // A SplitMix64 provides the SplitMix64 algorithm and implements
-// math/rand.Source64. May be manually seeded to any value.
+// math/rand.Source64. Can be seeded to any value.
 type SplitMix64 uint64
 
 var _ rand.Source64 = (*SplitMix64)(nil)
