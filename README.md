@@ -67,13 +67,28 @@ source from `math/rand`, and the "interface" benchmarks call through the
     BenchmarkXoshiro256ssInterface-8   	215023484	         5.58 ns/op
     BenchmarkPcg32-8                   	347164992	         3.54 ns/op
     BenchmarkPcg32Interface-8          	245145093	         4.90 ns/op
-    BenchmarkBaseline-8                	365977761	         3.29 ns/op
     BenchmarkPcg64-8            	222769274	         5.35 ns/op
     BenchmarkPcg64Interface-8   	170089952	         7.05 ns/op
+    BenchmarkBaseline-8                	365977761	         3.29 ns/op
     PASS
     ok  	github.com/skeeto/rng-go	14.099s
 
 The big takeaway here: **Interface calls are expensive!** If possible,
 use SplitMix64, and do not call it through an interface since that cuts
-its performance by 65%. If you must call through an interface, the
-built-in PRNG is the fastest. Use it if the large state doesn't matter.
+its performance in half. If you must call through an interface, the
+built-in PRNG is the fastest, though has the worst quality and a large
+state.
+
+## Statistical Quality
+
+| generator      | dieharder | BigCrush | PractRand |
+|----------------|-----------|----------|-----------|
+| math/rand      | PASS      | 1 fail   | 256MB     |
+| Lcg128         | PASS      | 1 fail   | 128GB     |
+| SplitMix64     | PASS      | 1 fail   | > 8TB     |
+| Xoroshiro256ss | PASS      | PASS     | > 8TB     |
+| Pcg32          | PASS      | 1 fail   | > 8TB     |
+| Pcg64          | PASS      | PASS     | > 8TB     |
+
+Tests were run with a zero seed, dieharder 3.31.1, TestU01 1.2.3, and
+PractRand 0.95. PractRand was stopped after 8TB of input.
