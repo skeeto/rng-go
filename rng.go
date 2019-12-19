@@ -176,3 +176,36 @@ func (s *Pcg32) Uint64() uint64 {
 func (s *Pcg32) Int63() int64 {
 	return int64(s.Uint64() >> 1)
 }
+
+// A Pcg64 provides a 64-bit permuted congruential generator that
+// implements math/rand.Source64. Can be seeded to any value.
+type Pcg64 struct{ Hi, Lo uint64 }
+
+var _ rand.Source64 = (*Pcg64)(nil)
+
+func (s *Pcg64) Seed(seed int64) {
+	s.Lo = uint64(seed)
+	s.Hi = 0
+}
+
+func (s *Pcg64) Uint64() uint64 {
+	const (
+		mhi = 0x2360ed051fc65da4
+		mlo = 0x4385df649fccf645
+		ahi = 0x5851f42d4c957f2d
+		alo = 0x14057b7ef767814f
+	)
+	carry, lo := bits.Mul64(mlo, s.Lo)
+	hi := mhi*s.Lo + s.Hi*mlo + carry
+	lo, carry = bits.Add64(lo, alo, 0)
+	hi += ahi + carry
+	s.Lo = lo
+	s.Hi = hi
+	lo, hi = lo^lo>>43^hi<<21, hi^hi>>43
+	r := int(hi>>60) + 45
+	return lo>>r | hi<<(64-r)
+}
+
+func (s *Pcg64) Int63() int64 {
+	return int64(s.Uint64() >> 1)
+}

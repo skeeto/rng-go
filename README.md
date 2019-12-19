@@ -68,6 +68,8 @@ source from `math/rand`, and the "interface" benchmarks call through the
     BenchmarkPcg32-8                   	347164992	         3.54 ns/op
     BenchmarkPcg32Interface-8          	245145093	         4.90 ns/op
     BenchmarkBaseline-8                	365977761	         3.29 ns/op
+    BenchmarkPcg64-8            	222769274	         5.35 ns/op
+    BenchmarkPcg64Interface-8   	170089952	         7.05 ns/op
     PASS
     ok  	github.com/skeeto/rng-go	14.099s
 
