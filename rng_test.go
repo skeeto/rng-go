@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/skeeto/rng-go"
+	"nullprogram.com/x/rng"
 )
 
 func TestLcg128(t *testing.T) {

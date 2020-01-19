@@ -6,7 +6,7 @@ import (
 	"math/rand"
 	"os"
 
-	"github.com/skeeto/rng-go"
+	"nullprogram.com/x/rng"
 )
 
 func main() {

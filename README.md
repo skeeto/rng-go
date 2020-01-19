@@ -29,8 +29,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/skeeto/rng-go"
 	"math/rand"
+
+	"nullprogram.com/x/rng"
 )
 
 func main() {
@@ -58,7 +59,7 @@ source from `math/rand`, and the "interface" benchmarks call through the
     $ go test -bench=.
     goos: linux
     goarch: amd64
-    pkg: github.com/skeeto/rng-go
+    pkg: nullprogram.com/x/rng
     BenchmarkLcg128-8                  	407349361	         2.76 ns/op
     BenchmarkLcg128Interface-8         	312309956	         3.85 ns/op
     BenchmarkSplitMix64-8              	888909228	         1.40 ns/op
@@ -71,7 +72,7 @@ source from `math/rand`, and the "interface" benchmarks call through the
     BenchmarkPcg64Interface-8   	170089952	         7.05 ns/op
     BenchmarkBaseline-8                	365977761	         3.29 ns/op
     PASS
-    ok  	github.com/skeeto/rng-go	14.099s
+    ok  	nullprogram.com/x/rng	14.099s
 
 The big takeaway here: **Interface calls are expensive!** If possible,
 use SplitMix64, and do not call it through an interface since that cuts
