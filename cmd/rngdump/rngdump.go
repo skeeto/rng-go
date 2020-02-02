@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"encoding/binary"
 	"math/rand"
 	"os"
@@ -32,11 +31,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	out := bufio.NewWriter(os.Stdout)
-	var buf [8]byte
+	const n = 1 << 12
+	var buf [8 * n]byte
 	for {
-		binary.LittleEndian.PutUint64(buf[:], gen())
-		if _, err := out.Write(buf[:]); err != nil {
+		for i := 0; i < n; i++ {
+			binary.LittleEndian.PutUint64(buf[i*8:], gen())
+		}
+		if _, err := os.Stdout.Write(buf[:]); err != nil {
 			break
 		}
 	}
