@@ -11,7 +11,8 @@ import (
 )
 
 // An Lcg128 is a truncated 128-bit linear congruential generator
-// implementing math/rand.Source64. Can be seeded to any value.
+// implementing math/rand.Source64. Can be seeded to any value. Lcg128
+// does not pass PractRand and is here mostly for benchmarking.
 type Lcg128 struct{ Hi, Lo uint64 }
 
 var _ rand.Source64 = (*Lcg128)(nil)
@@ -148,7 +149,8 @@ func (s *Xoshiro256ss) LongJump() {
 }
 
 // A Pcg32 provides a 32-bit permuted congruential generator that
-// implements math/rand.Source64. Can be seeded to any value.
+// implements math/rand.Source64. Can be seeded to any value. Pcg32 does
+// not pass Big Crush.
 type Pcg32 uint64
 
 var _ rand.Source64 = (*Pcg32)(nil)
@@ -207,5 +209,35 @@ func (s *Pcg64) Uint64() uint64 {
 }
 
 func (s *Pcg64) Int63() int64 {
+	return int64(s.Uint64() >> 1)
+}
+
+// A Pcg64x provides a 64-bit permuted congruential generator that
+// implements math/rand.Source64. Can be seeded to any value. The
+// permutation is done with xorshift-multiply. It's much faster than
+// Pcg64 but lacks its prediction resistance.
+type Pcg64x struct{ Hi, Lo uint64 }
+
+var _ rand.Source64 = (*Pcg64x)(nil)
+
+func (s *Pcg64x) Seed(seed int64) {
+	s.Lo = 0xe1cf322879493bf1
+	s.Hi = uint64(seed)
+}
+
+func (s *Pcg64x) Uint64() uint64 {
+	const m = 0xb47d5ba190fb0fa5
+	var c uint64
+	c, s.Lo = bits.Mul64(s.Lo, m)
+	s.Hi = s.Hi*m + c
+	s.Lo, c = bits.Add64(s.Lo, 1, 0)
+	s.Hi += c
+	r := s.Hi
+	r ^= r >> 32
+	r *= m
+	return r
+}
+
+func (s *Pcg64x) Int63() int64 {
 	return int64(s.Uint64() >> 1)
 }

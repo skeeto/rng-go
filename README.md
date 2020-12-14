@@ -1,26 +1,28 @@
 # Alternative Go PRNGs
 
-Package `rng` provides several more efficient PRNGs sources for use with
-`math/rand.Rand`. Each PRNG implements the `math/rand.Source64`
-interface.
+Package `rng` provides several more efficient, higher quality PRNGs
+sources for use with `math/rand.Rand`. Each PRNG implements the
+`math/rand.Source64` interface.
 
 What makes these PRNGs more efficient? They have tiny states — 32 bytes
 for the largest — compared to gc's default source, which has a ~5kB
 state. Two of the generators run faster, too. See the benchmarks below.
 
-What PRNGs are included?
+What generators are included?
 
-* A ["minimal standard" 128-bit linear congruential generator (LCG)][lcg128]
 * [SplitMix64][sm64]
+* [32-bit and 64-bit permuted congruential generator (PCG)][pcg32]
+* Custom 64-bit PCG using [xorshift-multiply][pr] permutation (Pcg64x)
 * [xoshiro256\*\*][xo]
-* [32-bit permuted congruential generator (PCG)][pcg32]
+* A ["minimal standard" 128-bit linear congruential generator (LCG)][lcg128]
+
+Pcg64x is the fastest generator that passes all of the tests.
 
 [lcg128]: http://www.pcg-random.org/posts/does-it-beat-the-minimal-standard.html
+[pcg32]: http://www.pcg-random.org/download.html
+[pr]: https://nullprogram.com/blog/2018/07/31/
 [sm64]: http://xoshiro.di.unimi.it/splitmix64.c
 [xo]: http://xoshiro.di.unimi.it/xoshiro256starstar.c
-[pcg32]: http://www.pcg-random.org/download.html
-
-Requires Go 1.12.
 
 ## Example
 
@@ -60,19 +62,21 @@ source from `math/rand`, and the "interface" benchmarks call through the
     goos: linux
     goarch: amd64
     pkg: nullprogram.com/x/rng
-    BenchmarkLcg128-8                  	407349361	         2.76 ns/op
-    BenchmarkLcg128Interface-8         	312309956	         3.85 ns/op
-    BenchmarkSplitMix64-8              	888909228	         1.40 ns/op
-    BenchmarkSplitMix64Interface-8     	348746890	         3.47 ns/op
-    BenchmarkXoshiro256ss-8            	345606333	         3.50 ns/op
-    BenchmarkXoshiro256ssInterface-8   	215023484	         5.58 ns/op
-    BenchmarkPcg32-8                   	347164992	         3.54 ns/op
-    BenchmarkPcg32Interface-8          	245145093	         4.90 ns/op
-    BenchmarkPcg64-8            	222769274	         5.35 ns/op
-    BenchmarkPcg64Interface-8   	170089952	         7.05 ns/op
-    BenchmarkBaseline-8                	365977761	         3.29 ns/op
+    BenchmarkLcg128-8                  	429435103	         2.72 ns/op
+    BenchmarkLcg128Interface-8         	305827086	         3.94 ns/op
+    BenchmarkSplitMix64-8              	869916241	         1.37 ns/op
+    BenchmarkSplitMix64Interface-8     	349949367	         3.40 ns/op
+    BenchmarkXoshiro256ss-8            	345413484	         3.49 ns/op
+    BenchmarkXoshiro256ssInterface-8   	219676675	         5.58 ns/op
+    BenchmarkPcg32-8                   	338895014	         3.54 ns/op
+    BenchmarkPcg32Interface-8          	249454053	         4.90 ns/op
+    BenchmarkPcg64-8                   	223279998	         5.40 ns/op
+    BenchmarkPcg64Interface-8          	169870239	         7.06 ns/op
+    BenchmarkPcg64x-8                  	590234182	         2.08 ns/op
+    BenchmarkPcg64xInterface-8         	285790071	         4.18 ns/op
+    BenchmarkBaseline-8                	298460190	         4.05 ns/op
     PASS
-    ok  	nullprogram.com/x/rng	14.099s
+    ok  	nullprogram.com/x/rng	20.867s
 
 The big takeaway here: **Interface calls are expensive!** If possible,
 use SplitMix64, and do not call it through an interface since that cuts
@@ -90,6 +94,7 @@ state.
 | Xoroshiro256ss | PASS      | PASS     | > 8TB     |
 | Pcg32          | PASS      | 1 fail   | > 8TB     |
 | Pcg64          | PASS      | PASS     | > 8TB     |
+| Pcg64x         | PASS      | PASS     | > 8TB     |
 
 Tests were run with a zero seed, dieharder 3.31.1, TestU01 1.2.3, and
 PractRand 0.95. PractRand was stopped after 8TB of input.

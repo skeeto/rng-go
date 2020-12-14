@@ -188,6 +188,30 @@ func TestPcg64(t *testing.T) {
 	}
 }
 
+func TestPcg64x(t *testing.T) {
+	want := []uint64{
+		0x3df9dcd05ccda305, 0x16f6db58022bacc1, 0xa63b6362a3cd40f7,
+		0xca13dfd56ea8ef4e, 0x5853275645fe74b5, 0x4ba45d105546008c,
+		0xfd9e9d8f90a90c56, 0xbf25345a63d46bd3, 0xc22456f591686cf3,
+		0x0b008f2ede6e0d91, 0x501d1cc4c0ba52a7, 0xa0d7998490c022c6,
+		0xcf28587e3252172c, 0x9cbeb645cba65c2a, 0x8ca3f7949a2607de,
+		0xc202ce927768aa15, 0x90e0fde8ceb6ca7e, 0xaf0dc1093a3e0e44,
+		0x34cbad7867c2755c, 0x1af455737add206b, 0xff312e21f55a694a,
+		0xa241a4e6f07bba19, 0x3df6845400364da4, 0xb0981cb89a3253f5,
+		0xff9ba1711ec5dc8f, 0x306a3658b01393e4, 0xe5aaf3e5692b4650,
+		0x91741b16cdba1f1a, 0x70ae0a10095443d4, 0x729d4e374832f0d6,
+	}
+	var r rng.Pcg64x
+	r.Seed(0)
+	for i, w := range want {
+		got := r.Uint64()
+		if got != w {
+			t.Errorf("Pcg64x.Uint64(%d), got %#016x, want %#016x",
+				i, got, w)
+		}
+	}
+}
+
 func BenchmarkPcg32(b *testing.B) {
 	var r rng.Pcg32
 	r.Seed(int64(b.N))
@@ -214,6 +238,22 @@ func BenchmarkPcg64(b *testing.B) {
 
 func BenchmarkPcg64Interface(b *testing.B) {
 	r := rand.New(new(rng.Pcg64))
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkPcg64x(b *testing.B) {
+	var r rng.Pcg64x
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkPcg64xInterface(b *testing.B) {
+	r := rand.New(new(rng.Pcg64x))
 	r.Seed(int64(b.N))
 	for i := 0; i < b.N; i++ {
 		r.Uint64()
