@@ -241,3 +241,33 @@ func (s *Pcg64x) Uint64() uint64 {
 func (s *Pcg64x) Int63() int64 {
 	return int64(s.Uint64() >> 1)
 }
+
+// A Msws64 is the Middle Square Weyl Sequence algorithm. It implements
+// math/rand.Source64 and may be seeded to any value.
+type Msws64 [4]uint64
+
+var _ rand.Source64 = (*Msws64)(nil)
+
+func (s *Msws64) Seed(seed int64) {
+	v := uint64(seed)
+	*s = Msws64{v, v, v, v}
+}
+
+func (s *Msws64) Int63() int64 {
+	return int64(s.Uint64() >> 1)
+}
+
+func (s *Msws64) Uint64() uint64 {
+	var xl, xh, wl, wh, c uint64
+	c, xl = bits.Mul64(s[0], s[0])
+	xh = 2*s[0]*s[1] + c
+	wl, c = bits.Add64(s[2], 0x8367589d496e8afd, 0)
+	wh = s[3] + 0x918fba1eff8e67e1 + c
+	xl, c = bits.Add64(xl, wl, 0)
+	xh = xh + wh + c
+	s[0] = xh
+	s[1] = xl
+	s[2] = wl
+	s[3] = wh
+	return xh
+}

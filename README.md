@@ -15,10 +15,12 @@ What generators are included?
 * Custom 64-bit PCG using [xorshift-multiply][pr] permutation (Pcg64x)
 * [xoshiro256\*\*][xo]
 * A ["minimal standard" 128-bit linear congruential generator (LCG)][lcg128]
+* A 64-bit [Middle Square Weyl Sequence][msws]
 
 Pcg64x is the fastest generator that passes all of the tests.
 
 [lcg128]: http://www.pcg-random.org/posts/does-it-beat-the-minimal-standard.html
+[msws]: https://pthree.org/2018/07/30/middle-square-weyl-sequence-prng/
 [pcg32]: http://www.pcg-random.org/download.html
 [pr]: https://nullprogram.com/blog/2018/07/31/
 [sm64]: http://xoshiro.di.unimi.it/splitmix64.c
@@ -74,9 +76,9 @@ source from `math/rand`, and the "interface" benchmarks call through the
     BenchmarkPcg64Interface-8          	169870239	         7.06 ns/op
     BenchmarkPcg64x-8                  	590234182	         2.08 ns/op
     BenchmarkPcg64xInterface-8         	285790071	         4.18 ns/op
+    BenchmarkMsws64-8                  	347618887	         3.43 ns/op
+    BenchmarkMsws64Interface-8         	245472339	         4.89 ns/op
     BenchmarkBaseline-8                	298460190	         4.05 ns/op
-    PASS
-    ok  	nullprogram.com/x/rng	20.867s
 
 The big takeaway here: **Interface calls are expensive!** If possible,
 use SplitMix64, and do not call it through an interface since that cuts
@@ -95,6 +97,7 @@ state.
 | Pcg32          | PASS      | 1 fail   | > 8TB     |
 | Pcg64          | PASS      | PASS     | > 8TB     |
 | Pcg64x         | PASS      | PASS     | > 8TB     |
+| Msws64         | PASS      | PASS     | > 8TB     |
 
 Tests were run with a zero seed, dieharder 3.31.1, TestU01 1.2.3, and
 PractRand 0.95. PractRand was stopped after 8TB of input.
