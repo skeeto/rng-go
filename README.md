@@ -16,9 +16,10 @@ What generators are included?
 * [xoshiro256\*\*][xo]
 * A ["minimal standard" 128-bit linear congruential generator (LCG)][lcg128]
 * A 64-bit [Middle Square Weyl Sequence][msws]
-* [RomuDuo][romu]
+* RomuDuo and RomuDuoJr of the [Romu family][romu]
 
-Pcg64x is the fastest generator that passes all of the tests.
+SplitMix64 is the fastest generator. RomuDuo is the fastest generator that
+passes all of the tests.
 
 [lcg128]: http://www.pcg-random.org/posts/does-it-beat-the-minimal-standard.html
 [msws]: https://pthree.org/2018/07/30/middle-square-weyl-sequence-prng/
@@ -82,12 +83,14 @@ source from `math/rand`, and the "interface" benchmarks call through the
     BenchmarkMsws64Interface-8         	245472339	         4.89 ns/op
     BenchmarkRomuDuo-8                 	581715128	         2.03 ns/op
     BenchmarkRomuDuoInterface-8        	331822014	         3.67 ns/op
+    BenchmarkRomuDuoJr-8               	643661610	         1.87 ns/op
+    BenchmarkRomuDuoInterfaceJr-8      	332948454	         3.62 ns/op
     BenchmarkBaseline-8                	298460190	         4.05 ns/op
 
-The big takeaway here: **Interface calls are expensive!** If possible,
-use SplitMix64, and do not call it through an interface since that cuts
-its performance in half. If you must call through an interface, the
-built-in PRNG is the fastest, though has the worst quality and a large
+The big takeaway here: **Interface calls are relatively expensive!** If
+possible, use SplitMix64, and do not call it through an interface since
+that cuts its performance in half. If you must call through an interface,
+the built-in PRNG is the fastest, though has the worst quality and a large
 state.
 
 ## Statistical Quality
@@ -103,6 +106,7 @@ state.
 | Pcg64x         | PASS      | PASS     | > 8TB     |
 | Msws64         | PASS      | PASS     | > 8TB     |
 | RomuDuo        | PASS      | PASS     | > 8TB     |
+| RomuDuoJr      | PASS      | 3 fail   | > 8TB     |
 
 Tests were run with a zero seed, dieharder 3.31.1, TestU01 1.2.3, and
 PractRand 0.95. PractRand was stopped after 8TB of input.

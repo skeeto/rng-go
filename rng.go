@@ -297,3 +297,31 @@ func (s *RomuDuo) Uint64() uint64 {
 	s.y = bits.RotateLeft64(s.y, 36) + bits.RotateLeft64(s.y, 15) - x
 	return x
 }
+
+// A RomuDuoJr is a chaotic generator that combines the linear operation
+// of multiplication with the nonlinear operation of rotation. It should
+// be slighter faster than RomuDuoJr at the cost of reduced capacity.
+// Must be seeded carefully with good random values, so the Seed()
+// method is highly recommended.
+type RomuDuoJr struct{ x, y uint64 }
+
+var _ rand.Source64 = (*RomuDuoJr)(nil)
+
+func (s *RomuDuoJr) Seed(seed int64) {
+	var m SplitMix64
+	m.Seed(seed)
+	s.x = m.Uint64()
+	s.y = m.Uint64()
+}
+
+func (s *RomuDuoJr) Int63() int64 {
+	return int64(s.Uint64() >> 1)
+}
+
+func (s *RomuDuoJr) Uint64() uint64 {
+	x := s.x
+	s.x = 0xd3833e804f4c574b * s.y
+	s.y -= x
+	s.y = bits.RotateLeft64(s.y, 27)
+	return x
+}
