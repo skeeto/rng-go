@@ -235,6 +235,31 @@ func TestMsws64(t *testing.T) {
 	}
 }
 
+func TestRomuDuo(t *testing.T) {
+	// Output from official reference implementation
+	want := []uint64{
+		0xe220a8397b1dcdaf, 0x55fcf1b3f366ca7c, 0x9eb834e3c190311d,
+		0xab9d6b6df8e3c1be, 0x90b4c67e093a6504, 0xe10add1516363e61,
+		0xfffc0e0cda58548b, 0x6029fb83b007ecca, 0x3df83004acca9c4d,
+		0x5a17629d93412209, 0x3d7b6e817c1a1c74, 0x53d4d21a8fb0ace7,
+		0x4482d635c3a1c5c8, 0x38d7151bf90119b3, 0xb704bcee1abc049a,
+		0xf9b01471cc2f51fe, 0x56d8a501d769675e, 0x78ae74325e5bf737,
+		0x2d1df34e617c96c0, 0xd5a61bd9c826e5d8, 0x4578ebd26b216724,
+		0x062b8632b54a0780, 0xed1fd50dd91e4a33, 0xcfcf5a348f47a172,
+		0x02ddda770f9f2dc2, 0x2cf440df9e5d064d, 0xf3d13d9148b0b382,
+		0xf81daac0b171e188, 0x14c08d919d08ff9e, 0x654891bee7b6b17e,
+	}
+	var r rng.RomuDuo
+	r.Seed(0)
+	for i, w := range want {
+		got := r.Uint64()
+		if got != w {
+			t.Errorf("RomuDuo.Uint64(%d), got %#016x, want %#016x",
+				i, got, w)
+		}
+	}
+}
+
 func BenchmarkPcg32(b *testing.B) {
 	var r rng.Pcg32
 	r.Seed(int64(b.N))
@@ -293,6 +318,22 @@ func BenchmarkMsws64(b *testing.B) {
 
 func BenchmarkMsws64Interface(b *testing.B) {
 	r := rand.New(new(rng.Msws64))
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkRomuDuo(b *testing.B) {
+	var r rng.RomuDuo
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkRomuDuoInterface(b *testing.B) {
+	r := rand.New(new(rng.RomuDuo))
 	r.Seed(int64(b.N))
 	for i := 0; i < b.N; i++ {
 		r.Uint64()

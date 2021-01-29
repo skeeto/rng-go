@@ -16,6 +16,7 @@ What generators are included?
 * [xoshiro256\*\*][xo]
 * A ["minimal standard" 128-bit linear congruential generator (LCG)][lcg128]
 * A 64-bit [Middle Square Weyl Sequence][msws]
+* [RomuDuo][romu]
 
 Pcg64x is the fastest generator that passes all of the tests.
 
@@ -23,6 +24,7 @@ Pcg64x is the fastest generator that passes all of the tests.
 [msws]: https://pthree.org/2018/07/30/middle-square-weyl-sequence-prng/
 [pcg32]: http://www.pcg-random.org/download.html
 [pr]: https://nullprogram.com/blog/2018/07/31/
+[romu]: https://romu-random.org/
 [sm64]: http://xoshiro.di.unimi.it/splitmix64.c
 [xo]: http://xoshiro.di.unimi.it/xoshiro256starstar.c
 
@@ -78,6 +80,8 @@ source from `math/rand`, and the "interface" benchmarks call through the
     BenchmarkPcg64xInterface-8         	285790071	         4.18 ns/op
     BenchmarkMsws64-8                  	347618887	         3.43 ns/op
     BenchmarkMsws64Interface-8         	245472339	         4.89 ns/op
+    BenchmarkRomuDuo-8                 	581715128	         2.03 ns/op
+    BenchmarkRomuDuoInterface-8        	331822014	         3.67 ns/op
     BenchmarkBaseline-8                	298460190	         4.05 ns/op
 
 The big takeaway here: **Interface calls are expensive!** If possible,
@@ -98,6 +102,7 @@ state.
 | Pcg64          | PASS      | PASS     | > 8TB     |
 | Pcg64x         | PASS      | PASS     | > 8TB     |
 | Msws64         | PASS      | PASS     | > 8TB     |
+| RomuDuo        | PASS      | PASS     | > 8TB     |
 
 Tests were run with a zero seed, dieharder 3.31.1, TestU01 1.2.3, and
 PractRand 0.95. PractRand was stopped after 8TB of input.

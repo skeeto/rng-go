@@ -29,6 +29,10 @@ func main() {
 		gen = new(rng.Pcg64x).Uint64
 	case "msws64":
 		gen = new(rng.Msws64).Uint64
+	case "romuduo":
+		r := new(rng.RomuDuo)
+		gen = r.Uint64
+		r.Seed(0)
 	case "baseline":
 		gen = rand.NewSource(0).(rand.Source64).Uint64
 	default:
