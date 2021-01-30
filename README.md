@@ -18,8 +18,8 @@ What generators are included?
 * A 64-bit [Middle Square Weyl Sequence][msws]
 * RomuDuo and RomuDuoJr of the [Romu family][romu]
 
-SplitMix64 is the fastest generator. RomuDuo is the fastest generator that
-passes all of the tests.
+SplitMix64 is the fastest generator. Pcg64x is the fastest robust
+generator.
 
 [lcg128]: http://www.pcg-random.org/posts/does-it-beat-the-minimal-standard.html
 [msws]: https://pthree.org/2018/07/30/middle-square-weyl-sequence-prng/
