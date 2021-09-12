@@ -373,7 +373,7 @@ func BenchmarkRomuDuoJr(b *testing.B) {
 	}
 }
 
-func BenchmarkRomuDuoInterfaceJr(b *testing.B) {
+func BenchmarkRomuDuoJrInterface(b *testing.B) {
 	r := rand.New(new(rng.RomuDuoJr))
 	r.Seed(int64(b.N))
 	for i := 0; i < b.N; i++ {
