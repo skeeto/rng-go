@@ -17,11 +17,13 @@ What generators are included?
 * A ["minimal standard" 128-bit linear congruential generator (LCG)][lcg128]
 * A 64-bit [Middle Square Weyl Sequence][msws]
 * RomuDuo and RomuDuoJr of the [Romu family][romu]
+* [Middle Multiplicative Fibonacci Generator][mmlfg]
 
-SplitMix64 is the fastest generator. Pcg64x is the fastest robust
+SplitMix64 is the fastest generator. Mmlfg is the fastest robust
 generator.
 
 [lcg128]: http://www.pcg-random.org/posts/does-it-beat-the-minimal-standard.html
+[mmlfg]: https://github.com/skeeto/scratch/tree/master/mmlfg
 [msws]: https://pthree.org/2018/07/30/middle-square-weyl-sequence-prng/
 [pcg32]: http://www.pcg-random.org/download.html
 [pr]: https://nullprogram.com/blog/2018/07/31/
@@ -67,25 +69,28 @@ source from `math/rand`, and the "interface" benchmarks call through the
     goos: linux
     goarch: amd64
     pkg: nullprogram.com/x/rng
-    BenchmarkLcg128-8                  	429435103	         2.72 ns/op
-    BenchmarkLcg128Interface-8         	305827086	         3.94 ns/op
-    BenchmarkSplitMix64-8              	869916241	         1.37 ns/op
-    BenchmarkSplitMix64Interface-8     	349949367	         3.40 ns/op
-    BenchmarkXoshiro256ss-8            	345413484	         3.49 ns/op
-    BenchmarkXoshiro256ssInterface-8   	219676675	         5.58 ns/op
-    BenchmarkPcg32-8                   	338895014	         3.54 ns/op
-    BenchmarkPcg32Interface-8          	249454053	         4.90 ns/op
-    BenchmarkPcg64-8                   	223279998	         5.40 ns/op
-    BenchmarkPcg64Interface-8          	169870239	         7.06 ns/op
-    BenchmarkPcg64x-8                  	590234182	         2.08 ns/op
-    BenchmarkPcg64xInterface-8         	285790071	         4.18 ns/op
-    BenchmarkMsws64-8                  	347618887	         3.43 ns/op
-    BenchmarkMsws64Interface-8         	245472339	         4.89 ns/op
-    BenchmarkRomuDuo-8                 	581715128	         2.03 ns/op
-    BenchmarkRomuDuoInterface-8        	331822014	         3.67 ns/op
-    BenchmarkRomuDuoJr-8               	643661610	         1.87 ns/op
-    BenchmarkRomuDuoInterfaceJr-8      	332948454	         3.62 ns/op
-    BenchmarkBaseline-8                	298460190	         4.05 ns/op
+    cpu: Intel(R) Core(TM) i7-8650U CPU @ 1.90GHz
+    BenchmarkLcg128-8                  	465076317	         2.521 ns/op
+    BenchmarkLcg128Interface-8         	384612382	         3.107 ns/op
+    BenchmarkSplitMix64-8              	955716288	         1.252 ns/op
+    BenchmarkSplitMix64Interface-8     	391783862	         3.126 ns/op
+    BenchmarkXoshiro256ss-8            	498003402	         2.409 ns/op
+    BenchmarkXoshiro256ssInterface-8   	381962832	         3.127 ns/op
+    BenchmarkPcg32-8                   	421974633	         2.840 ns/op
+    BenchmarkPcg32Interface-8          	332382873	         3.598 ns/op
+    BenchmarkPcg64-8                   	290823469	         4.146 ns/op
+    BenchmarkPcg64Interface-8          	232380673	         5.097 ns/op
+    BenchmarkPcg64x-8                  	612730354	         1.957 ns/op
+    BenchmarkPcg64xInterface-8         	388036062	         3.095 ns/op
+    BenchmarkMsws64-8                  	418388416	         2.999 ns/op
+    BenchmarkMsws64Interface-8         	326742526	         3.814 ns/op
+    BenchmarkRomuDuo-8                 	647598177	         1.847 ns/op
+    BenchmarkRomuDuoInterface-8        	419456901	         2.979 ns/op
+    BenchmarkRomuDuoJr-8               	692339223	         1.729 ns/op
+    BenchmarkRomuDuoJrInterface-8      	392713688	         3.196 ns/op
+    BenchmarkMmlfg-8                   	716652903	         1.605 ns/op
+    BenchmarkMmlfgInterface-8          	324306124	         3.730 ns/op
+    BenchmarkBaseline-8                	443593838	         2.615 ns/op
 
 The big takeaway here: **Interface calls are relatively expensive!** If
 possible, use SplitMix64, and do not call it through an interface since
@@ -107,6 +112,7 @@ state.
 | Msws64         | PASS      | PASS     | > 8TB     |
 | RomuDuo        | PASS      | PASS     | > 8TB     |
 | RomuDuoJr      | PASS      | 3 fail   | > 8TB     |
+| Mmlfg          | PASS      | PASS     | > 8TB     |
 
 Tests were run with a zero seed, dieharder 3.31.1, TestU01 1.2.3, and
 PractRand 0.95. PractRand was stopped after 8TB of input.

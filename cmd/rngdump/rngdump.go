@@ -37,6 +37,10 @@ func main() {
 		r := new(rng.RomuDuoJr)
 		gen = r.Uint64
 		r.Seed(0)
+	case "mmlfg":
+		r := new(rng.Mmlfg)
+		gen = r.Uint64
+		r.Seed(0)
 	case "baseline":
 		gen = rand.NewSource(0).(rand.Source64).Uint64
 	default:

@@ -325,3 +325,43 @@ func (s *RomuDuoJr) Uint64() uint64 {
 	s.y = bits.RotateLeft64(s.y, 27)
 	return x
 }
+
+// A Mmlfg is a Middle Multiplicative Lagged Fibonacci generator. The
+// output is the middle 64 bits of a 128-bit product. A larger state is
+// required to pass statistical tests. Must be seeded carefully with
+// good random values, and all state elements must be odd, so the Seed()
+// method is highly recommended.
+type Mmlfg struct {
+	s    [15]uint64
+	i, j int32
+}
+
+var _ rand.Source = (*Mmlfg)(nil)
+
+func (m *Mmlfg) Seed(seed int64) {
+	s := uint64(seed)
+	for i := 0; i < 15; i++ {
+		s = s*0x3243f6a8885a308d + 1111111111111111111
+		m.s[i] = s ^ s>>31 | 1
+	}
+	m.i = 14
+	m.j = 12
+}
+
+func (m *Mmlfg) Int63() int64 {
+	return int64(m.Uint64() >> 1)
+}
+
+func (m *Mmlfg) Uint64() uint64 {
+	hi, lo := bits.Mul64(m.s[m.i], m.s[m.j])
+	m.s[m.i] = lo
+	m.i--
+	if m.i < 0 {
+		m.i = 14
+	}
+	m.j--
+	if m.j < 0 {
+		m.j = 14
+	}
+	return hi<<32 | lo>>32
+}

@@ -285,6 +285,34 @@ func TestRomuDuoJr(t *testing.T) {
 	}
 }
 
+func TestMmlfg(t *testing.T) {
+	// Output from Lua implementation
+	want := []uint64{
+		0x1573aa52f814bda8, 0x3aeaac28b52676e2, 0x8f1b6491309e5792,
+		0x25bca26e169f58cd, 0xee13266f6d5bad81, 0xd688681022995579,
+		0xc227f64fffc6967a, 0x3d06e4f91995745f, 0x4077b1108d5150b1,
+		0x41deb8bcf496aac3, 0xdef5ecadb01c5527, 0x42be0306aca9476d,
+		0xcc40df9abc49fae2, 0xd6fab4fe6f2c8373, 0xad02822ecc846c6d,
+		0x602b2201cc7bf7b7, 0xded4343bd0724597, 0xfcbcd8d91b8f65f4,
+		0xfc76214430f94e44, 0x4c7fc6e9f4291294, 0xfca3ad5722cee412,
+		0xe3383e408585396a, 0xfbafa05b7c2faecf, 0xe684088050284b8c,
+		0x8bbb114ed18162a0, 0x0bbde9b2d192d39b, 0xb403be5f2fb967e5,
+		0xc60ea291e01fe627, 0x1790ba5d87432edc, 0x598bdded3fe137d9,
+		0x0dba6bcb0e9e17ef, 0x748d4dac10754ca0, 0xa212d97e7982de85,
+		0x975ea1c76b0f0a7e, 0xad0170d0b44d8673, 0xa3d8fb24e994e7cf,
+		0x5ecef8bd9f6e7279, 0xc3a57186c73c6a98, 0x7f3ad93171dfdff9,
+	}
+	var r rng.Mmlfg
+	r.Seed(0)
+	for i, w := range want {
+		got := r.Uint64()
+		if got != w {
+			t.Errorf("Mmlfg.Uint64(%d), got %#016x, want %#016x",
+				i, got, w)
+		}
+	}
+}
+
 func BenchmarkPcg32(b *testing.B) {
 	var r rng.Pcg32
 	r.Seed(int64(b.N))
@@ -375,6 +403,22 @@ func BenchmarkRomuDuoJr(b *testing.B) {
 
 func BenchmarkRomuDuoJrInterface(b *testing.B) {
 	r := rand.New(new(rng.RomuDuoJr))
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkMmlfg(b *testing.B) {
+	var r rng.Mmlfg
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkMmlfgInterface(b *testing.B) {
+	r := rand.New(new(rng.Mmlfg))
 	r.Seed(int64(b.N))
 	for i := 0; i < b.N; i++ {
 		r.Uint64()
