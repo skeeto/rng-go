@@ -365,3 +365,35 @@ func (m *Mmlfg) Uint64() uint64 {
 	}
 	return hi<<32 | lo>>32
 }
+
+// A Mwc256xxa64 is a 64-bit lag-3 multiply-with-carry generator. Must
+// be seeded carefully with good random values, so the Seed() method is
+// highly recommended.
+type Mwc256xxa64 [4]uint64
+
+var _ rand.Source64 = (*Mwc256xxa64)(nil)
+
+func (m *Mwc256xxa64) Seed(seed int64) {
+	m[0] = uint64(seed)
+	m[1] = uint64(seed)
+	m[2] = 0xcafef00dd15ea5e5
+	m[3] = 0x14057b7ef767814f
+	for i := 0; i < 6; i++ {
+		m.Uint64()
+	}
+}
+
+func (m *Mwc256xxa64) Int63() int64 {
+	return int64(m.Uint64() >> 1)
+}
+
+func (m *Mwc256xxa64) Uint64() uint64 {
+	hi, lo := bits.Mul64(0xfeb344657c0af413, m[2])
+	r := (m[2] ^ m[1]) + (m[0] ^ hi)
+	t, c := bits.Add64(m[3], lo, 0)
+	m[2] = m[1]
+	m[1] = m[0]
+	m[0] = t
+	m[3] = hi + c
+	return r
+}

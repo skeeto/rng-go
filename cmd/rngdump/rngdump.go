@@ -41,6 +41,10 @@ func main() {
 		r := new(rng.Mmlfg)
 		gen = r.Uint64
 		r.Seed(0)
+	case "mwc256xxa64":
+		r := new(rng.Mwc256xxa64)
+		gen = r.Uint64
+		r.Seed(0)
 	case "baseline":
 		gen = rand.NewSource(0).(rand.Source64).Uint64
 	default:

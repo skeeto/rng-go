@@ -18,6 +18,7 @@ What generators are included?
 * A 64-bit [Middle Square Weyl Sequence][msws]
 * RomuDuo and RomuDuoJr of the [Romu family][romu]
 * [Middle Multiplicative Fibonacci Generator][mmlfg]
+* [64-bit lag-3 multiply-with-carry generator][mwc256xxa64]
 
 SplitMix64 is the fastest generator. Mmlfg is the fastest robust
 generator.
@@ -25,6 +26,7 @@ generator.
 [lcg128]: http://www.pcg-random.org/posts/does-it-beat-the-minimal-standard.html
 [mmlfg]: https://github.com/skeeto/scratch/tree/master/mmlfg
 [msws]: https://pthree.org/2018/07/30/middle-square-weyl-sequence-prng/
+[mwc256xxa64]: https://tom-kaitchuck.medium.com/designing-a-new-prng-1c4ffd27124d
 [pcg32]: http://www.pcg-random.org/download.html
 [pr]: https://nullprogram.com/blog/2018/07/31/
 [romu]: https://romu-random.org/
@@ -90,6 +92,8 @@ source from `math/rand`, and the "interface" benchmarks call through the
     BenchmarkRomuDuoJrInterface-8      	392713688	         3.196 ns/op
     BenchmarkMmlfg-8                   	716652903	         1.605 ns/op
     BenchmarkMmlfgInterface-8          	324306124	         3.730 ns/op
+    BenchmarkMwc256xxa64-8             	558840489	         2.153 ns/op
+    BenchmarkMwc256xxa64Interface-8    	356378312	         3.454 ns/op
     BenchmarkBaseline-8                	443593838	         2.615 ns/op
 
 The big takeaway here: **Interface calls are relatively expensive!** If

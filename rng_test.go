@@ -313,6 +313,31 @@ func TestMmlfg(t *testing.T) {
 	}
 }
 
+func TestMwc256xxa64(t *testing.T) {
+	// Output from verified C implementation
+	want := []uint64{
+		0x2b750aa6211dc4c8, 0x6107943f5b9495ba, 0x3c8da4c5bb305826,
+		0xc8d46ac6518edeee, 0xe7248172431d2435, 0x5e10dffca7c7cce8,
+		0xe24698afc66cbb65, 0xbba8e50d5485be4e, 0xe67657be07ea8fcc,
+		0x30b8626370609d76, 0xfc3c455d81cd0b42, 0xd7c9b35131da935b,
+		0x03420731df1a5bfe, 0xaf132f430af33134, 0xf34de66f7513b859,
+		0x0cb2d0f6a6d3785c, 0xa1994e0d59e20607, 0xbcc74bed40246828,
+		0xd63ba9adbdc84bb5, 0x0596eac4d503d1a6, 0xb638774ec2ba1d3b,
+		0x4fa6e317a6ec25aa, 0x2cfa1918ff8e39ee, 0x7de3a330cb1b78a2,
+		0x9aa87a6db0db344e, 0xca76d7e369247bf6, 0xe712b795c43d635d,
+		0x5582820e9a3c386b, 0x7232f4aedfd837c6, 0xeb5862c1fa0de759,
+	}
+	var r rng.Mwc256xxa64
+	r.Seed(0)
+	for i, w := range want {
+		got := r.Uint64()
+		if got != w {
+			t.Errorf("Mwc256xxa64.Uint64(%d), got %#016x, want %#016x",
+				i, got, w)
+		}
+	}
+}
+
 func BenchmarkPcg32(b *testing.B) {
 	var r rng.Pcg32
 	r.Seed(int64(b.N))
@@ -419,6 +444,22 @@ func BenchmarkMmlfg(b *testing.B) {
 
 func BenchmarkMmlfgInterface(b *testing.B) {
 	r := rand.New(new(rng.Mmlfg))
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkMwc256xxa64(b *testing.B) {
+	var r rng.Mwc256xxa64
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkMwc256xxa64Interface(b *testing.B) {
+	r := rand.New(new(rng.Mwc256xxa64))
 	r.Seed(int64(b.N))
 	for i := 0; i < b.N; i++ {
 		r.Uint64()
