@@ -338,6 +338,31 @@ func TestMwc256xxa64(t *testing.T) {
 	}
 }
 
+func TestSfc64(t *testing.T) {
+	// Output from verified C implementation
+	want := []uint64{
+		0x4924ff4c8f23b58f, 0xa3e84ffe5f8d448c, 0xa439defd7d8e30e4,
+		0x4b469b6c891a5ea8, 0xdd26273b7e638f30, 0xbe5b3ec3cf4ad846,
+		0x070801b0731bbbd5, 0x12c292c538eec15a, 0x0f0615985c38318b,
+		0x2dccf51109078fce, 0xbe6d2bfb73aa8118, 0x2d57e8be950bf07d,
+		0x0f26b4b2f888e339, 0x5c489e44949a7ffa, 0x014d27ac157f6aed,
+		0x51d7a735b7db0031, 0x3b51700fc0574182, 0xaba30fcf683c989d,
+		0x77ed668b412df2b1, 0x20a48173f069b5c3, 0x7edb28183a06412b,
+		0x86ebcbd48eb910c0, 0x8970d9ef6a41236c, 0x56e93529c801c4cc,
+		0xfb3b35a5482f391e, 0x8892326faaeba4be, 0xf343de35f5fa5362,
+		0xc684e79baf035def, 0x0585dc2f91b42d32, 0xd330a1582bff8065,
+	}
+	var r rng.Sfc64
+	r.Seed(0)
+	for i, w := range want {
+		got := r.Uint64()
+		if got != w {
+			t.Errorf("Sfc64.Uint64(%d), got %#016x, want %#016x",
+				i, got, w)
+		}
+	}
+}
+
 func BenchmarkPcg32(b *testing.B) {
 	var r rng.Pcg32
 	r.Seed(int64(b.N))
@@ -460,6 +485,22 @@ func BenchmarkMwc256xxa64(b *testing.B) {
 
 func BenchmarkMwc256xxa64Interface(b *testing.B) {
 	r := rand.New(new(rng.Mwc256xxa64))
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkSfc64(b *testing.B) {
+	var r rng.Sfc64
+	r.Seed(int64(b.N))
+	for i := 0; i < b.N; i++ {
+		r.Uint64()
+	}
+}
+
+func BenchmarkSfc64Interface(b *testing.B) {
+	r := rand.New(new(rng.Sfc64))
 	r.Seed(int64(b.N))
 	for i := 0; i < b.N; i++ {
 		r.Uint64()

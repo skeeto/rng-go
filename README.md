@@ -19,6 +19,7 @@ What generators are included?
 * RomuDuo and RomuDuoJr of the [Romu family][romu]
 * [Middle Multiplicative Fibonacci Generator][mmlfg]
 * [64-bit lag-3 multiply-with-carry generator][mwc256xxa64]
+* [sfc64: small fast chaotic 64-bit generator][sfc64]
 
 SplitMix64 is the fastest generator. Mmlfg is the fastest robust
 generator.
@@ -30,6 +31,7 @@ generator.
 [pcg32]: http://www.pcg-random.org/download.html
 [pr]: https://nullprogram.com/blog/2018/07/31/
 [romu]: https://romu-random.org/
+[sfc64]: http://pracrand.sourceforge.net/RNG_engines.txt
 [sm64]: http://xoshiro.di.unimi.it/splitmix64.c
 [xo]: http://xoshiro.di.unimi.it/xoshiro256starstar.c
 
@@ -94,6 +96,8 @@ source from `math/rand`, and the "interface" benchmarks call through the
     BenchmarkMmlfgInterface-8          	324306124	         3.730 ns/op
     BenchmarkMwc256xxa64-8             	558840489	         2.153 ns/op
     BenchmarkMwc256xxa64Interface-8    	356378312	         3.454 ns/op
+    BenchmarkSfc64-8                   	686133972	         1.721 ns/op
+    BenchmarkSfc64Interface-8          	405740188	         3.015 ns/op
     BenchmarkBaseline-8                	443593838	         2.615 ns/op
 
 The big takeaway here: **Interface calls are relatively expensive!** If
@@ -117,6 +121,7 @@ state.
 | RomuDuo        | PASS      | PASS     | > 8TB     |
 | RomuDuoJr      | PASS      | 3 fail   | > 8TB     |
 | Mmlfg          | PASS      | PASS     | > 8TB     |
+| Sfc64          | PASS      | PASS     | > 8TB     |
 
 Tests were run with a zero seed, dieharder 3.31.1, TestU01 1.2.3, and
 PractRand 0.95. PractRand was stopped after 8TB of input.

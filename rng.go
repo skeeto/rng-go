@@ -397,3 +397,32 @@ func (m *Mwc256xxa64) Uint64() uint64 {
 	m[3] = hi + c
 	return r
 }
+
+// An Sfc64 is a 64-bit "small, fast, chaotic" generator. Must be seeded
+// carefully with good random values, so the Seed() method is highly
+// recommended.
+type Sfc64 [4]uint64
+
+var _ rand.Source64 = (*Sfc64)(nil)
+
+func (s *Sfc64) Seed(seed int64) {
+	var m SplitMix64
+	m.Seed(seed)
+	s[0] = m.Uint64()
+	s[1] = m.Uint64()
+	s[2] = m.Uint64()
+	s[3] = m.Uint64()
+}
+
+func (s *Sfc64) Int63() int64 {
+	return int64(s.Uint64() >> 1)
+}
+
+func (s *Sfc64) Uint64() uint64 {
+	r := s[0] + s[1] + s[3]
+	s[3]++
+	s[0] = (s[1] >> 11) ^ s[1]
+	s[1] = (s[2] << 3) + s[2]
+	s[2] = r + (s[2]<<24 | s[2]>>40)
+	return r
+}
